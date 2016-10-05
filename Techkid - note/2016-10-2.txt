@@ -1,0 +1,22 @@
+Dang ki git lam repo
+Demo game tag Huy, Nga, Nhan	
+
+- New project -> java
+
+- Ctrl click to see information
+
+- Playing with file require surround with try catch
+
+- Image start from:
+	+ x = top left -> top right
+	+ y = top left -> bot left
+
+- Alt enter to import class
+
+- addWindowListener to open/close
+
+- addKeyListener = key type/press/release
+
+
+Homework:
+Create an plane that use mouse to move
