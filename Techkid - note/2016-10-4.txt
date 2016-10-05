@@ -30,13 +30,21 @@
 
 - new Plane() allocates memory for a new Plane object
 
+
 - Let in object draw its own image:
    +    public void drawImage(Graphics g) {
            g.drawImage(photo,x,y,sizeX,sizeY,null);
         }
    + plane1.drawImage(backBufferImage);
 
-- private Set<Character> pressed = new HashSet<Character>;
+
+- private Set<Integer> pressed = new HashSet<Integer>;
 - KeyEvent e;
-- pressed.add(e.getKeyChar());
-- pressed.remove(e.getKeyChar());
+- pressed.add(e.getKeyCode());
+- pressed.remove(e.getKeyCode());
+
+
+- NEVER USE MOUSE CLICK TO SHOOT FROM PLANE
+
+
+
