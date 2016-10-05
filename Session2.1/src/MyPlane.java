@@ -32,7 +32,7 @@ public class MyPlane {
 
     //**********  GAMEPLAY  ***************************************************************
     private int moveSpeed = 3;
-    private int attackSpeed = 500; //ms
+    private int attackSpeed = 150; //ms
         long lastAttack = System.currentTimeMillis();
     private int bulletSpeed = 10;
     private boolean useMouse = false;
