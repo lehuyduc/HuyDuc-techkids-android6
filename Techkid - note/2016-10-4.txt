@@ -1,0 +1,50 @@
+- UI programming:
+   + Main thread (UI thread): ve lien tuc thi treo
+   -> create new thread to act as a Timer.
+
+
+- Thread thread = new Thread();
+- Do not use wait in gameWindow (main UI)
+
+
+- Back buffer: hidden screen not shown to user
+   + Draw everything on back buffer, then UI := back_buffer;
+ 
+
+## Cot ben phai mau do la co compile error
+
+
+- Graphics backBufferGraphics = backBufferImage.getGraphics();
+- backBufferGraphics.drawImage(backgroundImage, 
+0, 0, backgroundX, backgroundY, null);
+
+
+-array name = object_name + 's'
+	MyPlane -> myPlanes
+	Bullet -> bullets
+
+
+- When we declare: Plane plane1;
+	 we create a REFERENCE to an object of class Plane
+
+
+- new Plane() allocates memory for a new Plane object
+
+
+- Let in object draw its own image:
+   +    public void drawImage(Graphics g) {
+           g.drawImage(photo,x,y,sizeX,sizeY,null);
+        }
+   + plane1.drawImage(backBufferImage);
+
+
+- private Set<Integer> pressed = new HashSet<Integer>;
+- KeyEvent e;
+- pressed.add(e.getKeyCode());
+- pressed.remove(e.getKeyCode());
+
+
+- NEVER USE MOUSE CLICK TO SHOOT FROM PLANE
+
+
+
