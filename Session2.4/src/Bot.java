@@ -19,6 +19,7 @@ public class Bot {
     protected int x = 0, y = 0, cornerX = 0, cornerY = 0;
     protected int sizeX = 50, sizeY = 50;
     protected Image photo = null;
+    protected String bulletPhoto = "";
     protected int horizon = 0;
     protected boolean dead = false;
     protected boolean isBoss = false;
@@ -102,6 +103,8 @@ public class Bot {
 
     public void takeDamage(int dam) {setHealth(health-dam);}
 
+    public void setBulletPhoto(String link) {bulletPhoto = link;}
+
 
     //**********  GET OPERATOR  ***************************************************************
     public int getX() {return x;}
@@ -176,6 +179,11 @@ public class Bot {
         bullet.setX(x);
         bullet.setY(y + sizeY/2 - 15);
         bullet.setEnemy(true);
+        if (bulletPhoto!="") {
+            bullet.setPhoto(bulletPhoto);
+            bullet.setSizeX(50);
+            bullet.setSizeY(50);
+        }
 
         int n = ++Object.countBullet;
         Object.bullets[n-1] = bullet;

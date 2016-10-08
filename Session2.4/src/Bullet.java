@@ -29,7 +29,7 @@ public class Bullet {
     private int moveSpeed = 6;
     private int horizon = 0; // 0 is straight, 1 is left, 2 is down
     private boolean enemy = false;
-    private int damage = 100;
+    private int damage = 50;
     private int health = 1;
 
 
@@ -83,6 +83,8 @@ public class Bullet {
     public void setHealth(int v) {health = v; if (health<=0) dead = true;}
 
     public void takeDamage(int v) {setHealth(health-v);}
+
+    public void setPhoto(Image im) {photo = im;}
 
 
     //**********  GET OPERATOR  ***************************************************************

@@ -117,14 +117,14 @@ public class Object {
                     Point corner = new Point(b.getCornerX(), b.getCornerY());
                     if (Self.collide(Boss.toBoss(t), center, Self.distance(center,corner))) {
                         bots[i].takeDamage(bullets[j].getDamage());
-                        bullets[j].setDead(true);
+                        bullets[j].takeDamage(100);
                     }
                 }
                 else
                 if (Self.collide(new Point(t.getCornerX(),t.getCornerY()), t.getSizeX(), t.getSizeY(),
                                  new Point(b.getCornerX(),b.getCornerY()), b.getSizeX(), b.getSizeY())) {
                     bots[i].takeDamage(bullets[j].getDamage());
-                    bullets[j].setDead(true);
+                    bullets[j].takeDamage(100);
                 }
             }
 
@@ -153,12 +153,12 @@ public class Object {
         //Player vs enemy bullet
         for (int i=0;i<countMyPlane;i++) if (!myPlanes[i].getDead()) {
             p = myPlanes[i];
-            for (int j=0;j<countBullet;j++) if (!bullets[j].getDead() && bullets[j].getEnemy()) {
+            for (int j=0;j<countBullet;j++) if (bullets[j]!=null && !bullets[j].getDead() && bullets[j].getEnemy()) {
                 b = bullets[j];
                 if (Self.collide(new Point(p.getCornerX(), p.getCornerY()), p.getSizeX(), p.getSizeY(),
                         new Point(b.getCornerX(), b.getCornerY()), b.getSizeX(), b.getSizeY())) {
                     myPlanes[i].takeDamage(bullets[j].getDamage());
-                    bullets[j].setDead(true);
+                    bullets[j].takeDamage(100);
                     break;
                 }
             }

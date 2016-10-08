@@ -16,7 +16,7 @@ public class Boss1 extends Boss {
     private boolean has_enter = false;
     private long[] lastAttack = new long[20];
     private long now = System.currentTimeMillis();
-    private long actionDuration = 5000;
+    private long actionDuration = 3000;
 
     //********** IMAGE AND DRAWING  ***************************************************************
     private void initImage() {
@@ -107,8 +107,6 @@ public class Boss1 extends Boss {
 
 
     public void attack1() {
-       // now = System.currentTimeMillis();
-       // if (now - lastAction > actionDuration) return;
         int tmp = attackSpeed;
         attackSpeed = 700;
         for (int i=0;i<=12;i++) shootBullet(i,points[i].x,points[i].y,"");
@@ -116,8 +114,6 @@ public class Boss1 extends Boss {
     }
 
     public void attack2() {
-      //  now = System.currentTimeMillis();
-     //   if (now - lastAction > actionDuration) return;
         int tmp = attackSpeed;
         attackSpeed = 2000;
         shootBullet(0,points[0].x,points[0].y,"laser");
@@ -125,7 +121,21 @@ public class Boss1 extends Boss {
     }
 
     public void attack3() {
+        for (int i=0;i<6;i++) {
+            Bot b = new Bot();
+            b.setHealth(500);
+            b.setPhoto("resources/phoenix.png");
+            b.setBulletPhoto("resources/phoenix_bullet2.png");
 
+            Random rd = new Random();
+            b.setX(rd.nextInt(9)*100 + 200);
+            b.setY(100);
+            b.setSizeX(80);
+            b.setSizeY(80);
+
+            int n = ++Object.countBot;
+            Object.bots[n-1] = b;
+        }
     }
 
     public void attack4() {
@@ -135,21 +145,27 @@ public class Boss1 extends Boss {
 
 
     private long lastAction = 0;
-    private int type = 0;
+    private int type = 0, least = 0;
+    private boolean needPause = false;
     public void action() {
         if (!has_enter && y<150) {move(1,0); return;} else has_enter = true;
-        attack1();
 
-//        if (type==1) attack1();
-//        if (type==2) attack2();
-//        if (type==3) attack3();
-//        if (type==4) attack4();
-//
-//        now = System.currentTimeMillis();
-//        if (now - lastAction <= actionDuration) return;
-//        lastAction = now;
-//        Random rd = new Random();
-//        int type = rd.nextInt(4) + 1;
+        now = System.currentTimeMillis();
+        if (now < lastAction) return;
+        if (type==1) attack1();
+        if (type==2) attack2();
+        if (type==3 && Object.countBot==1) attack3();
+        //if (type==4) attack4();
+
+        now = System.currentTimeMillis();
+        if (now-lastAction <= actionDuration) return;
+        while (true) {
+            Random rd = new Random();
+            type = rd.nextInt(3) + 1;
+            if (type==3 && Object.countBot >1) continue;
+            break;
+        }
+        lastAction = now+3000;
     }
 
 
