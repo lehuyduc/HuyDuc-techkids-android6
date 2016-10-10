@@ -1,0 +1,9 @@
+- MVC tach thanh 3 class de edit de. Edit cai nay ko anh huong cai kia.
+
+- Control quan ly khi nao goi view, update model.
+
+- controllers: keypress cho vao control.
+
+- controllers contain models and views
+
+- Composition = a class inside another class

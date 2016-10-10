@@ -1,0 +1,2 @@
+- Concurrent modification: remove while iterating through arrayList
+or forget to delete dead variables
