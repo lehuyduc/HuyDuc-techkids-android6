@@ -1,0 +1,41 @@
+
+/*****************************************/
+- @Override is not compulsory
+
+
+/*****************************************/
+- All thread run at the same time.
+- In each thread, each command is run sequentially.
+
+
+
+/*****************************************/
+- polymorphism:
+	+ Make a GameObject class and everything extends from it
+
+
+/*****************************************/
+- Without a superclass constructor in subclass, the compiler add 
+super() inside the subclass constructor.
+
+class A() {
+A(int x) {};
+}
+
+class B() extends A {
+	B(int x) {} -> compiled as B(int x) {super();} -> compile error
+}
+
+
+/*****************************************/
+- Check if varible a is of type X:
+if (a instanceof X)
+
+
+/*****************************************/
+- final keyword refers to the REFERENCE of that pointer.
+final means that the REFERENCE can not be changed, but the object can.
+
+public static final MyPlane[] myPlanes = new MyPlane[3];
+myPlanes[0].setDamage(100);
+-> is still ok

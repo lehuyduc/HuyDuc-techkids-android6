@@ -1,2 +1,8 @@
 - Concurrent modification: remove while iterating through arrayList
 or forget to delete dead variables
+
+- Concurrent modification can happen when a object is modified in 
+2 different threads. Solution: add synchronized to anything that happen
+in two thread.
+	+ another solution: make all run() and drawImage() synchronized
+

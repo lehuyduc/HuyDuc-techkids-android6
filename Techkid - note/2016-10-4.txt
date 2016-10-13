@@ -46,5 +46,11 @@
 
 - NEVER USE MOUSE CLICK TO SHOOT FROM PLANE
 
+- In update() to repaint(), delete the super.update(g).
+It will cause flickering\
+
+
+- Always use setX instead of x += 
+
 
 
