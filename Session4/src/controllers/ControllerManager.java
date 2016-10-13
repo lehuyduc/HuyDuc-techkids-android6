@@ -11,30 +11,30 @@ import java.util.Vector;
  */
 public class ControllerManager implements BaseController{
 
-    private Vector<SingleController> singleControllers;
+    protected Vector<SingleController> singleControllers;
 
     public ControllerManager() {
         singleControllers = new Vector<>();
     }
 
-    public boolean needDelete() {
+    public boolean deleteNow() {
         return singleControllers.size()==0;
     }
 
 
-    public void add(SingleController sc) {
+    public synchronized void add(SingleController sc) {
         singleControllers.add(sc);
     }
 
-    public void remove(SingleController sc) {
+    public synchronized void remove(SingleController sc) {
         singleControllers.remove(sc);
     }
 
-    public void remove() {
+    public synchronized void remove() {
         Iterator<SingleController> it = singleControllers.iterator();
         while (it.hasNext()) {
             SingleController singleController = it.next();
-            if (singleController.needDelete()) it.remove();
+            if (singleController.deleteNow()) it.remove();
         }
     }
 
@@ -46,6 +46,7 @@ public class ControllerManager implements BaseController{
     public synchronized void run() {
         for (SingleController singleController : singleControllers)
             singleController.run();
+        remove();
     }
 
 }

@@ -1,6 +1,5 @@
 package controllers;
 
-import models.Bullet;
 import models.GameObject;
 import models.Plane;
 import utilities.KeyInput;
@@ -8,12 +7,9 @@ import utilities.KeyInputListener;
 import utilities.MouseInput;
 import utilities.MouseInputListener;
 import views.GameView;
+import views.ImageView;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 /**
  * Created by Le Huy Duc on 12/10/2016.
@@ -28,13 +24,13 @@ public class PlaneController extends SingleController implements Colliable{
 
     private boolean useMouse = false;
 
-    public PlaneController(GameObject go,GameView gv) {
+    public PlaneController(GameObject go, GameView gv) {
         super(go,gv);
         CollisionPool.instance.add(this);
     }
 
     public PlaneController(int x,int y,boolean mouse) {
-        super(new GameObject(x,y), new GameView("resources/plane2.png"));
+        super(new Plane(x,y), new ImageView("resources/plane2.png"));
         if (mouse) gameView.setImage("resources/plane3.png");
         useMouse = mouse;
         gameObject.setSizeX(50);

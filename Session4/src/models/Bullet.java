@@ -17,7 +17,7 @@ public class Bullet extends GameObject {
         setDamage(50);
     }
 
-    public boolean needDelete() {
+    public boolean deleteNow() {
         return oos() || dead;
     }
 }

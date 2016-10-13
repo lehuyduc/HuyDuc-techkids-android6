@@ -1,9 +1,9 @@
 package controllers;
 
-import models.Bullet;
 import models.EnemyPlane;
 import models.GameObject;
 import views.GameView;
+import views.ImageView;
 
 import java.awt.*;
 
@@ -22,17 +22,35 @@ public class EnemyPlaneController extends SingleController implements Colliable 
     }
 
     public EnemyPlaneController(int x,int y) {
-        super(new GameObject(x,y), new GameView("resources/enemy_plane_white_2.png"));
+        super(new EnemyPlane(x,y), new ImageView("resources/enemy_plane_white_2.png"));
         gameObject.setSizeX(EnemyPlane.SIZEX);
         gameObject.setSizeY(EnemyPlane.SIZEY);
         gameObject.setMoveSpeed(1);
         gameObject.setHealth(100);
-        gameObject.setAttackSpeed(1000);
+        gameObject.setAttackSpeed(30000);
         CollisionPool.instance.add(this);
     }
 
-    public boolean needDelete() {
-        return gameObject.needDelete() && bulletController.needDelete();
+    public EnemyPlaneController(int x,int y,int sx,int sy) {
+        super(new GameObject(x,y,sx,sy), new ImageView("resources/enemy_plane_white_2.png"));
+        gameObject.setMoveSpeed(1);
+        gameObject.setHealth(100);
+        gameObject.setAttackSpeed(30000);
+        CollisionPool.instance.add(this);
+    }
+
+    public boolean deathEffect() {
+        if (deathEffect) return false;
+        deathEffect = true;
+        GameObject go = gameObject;
+        ExplosionControllerManager.instance.add
+                (new ExplosionController(go.getX(),go.getY(),go.getSizeX(),go.getSizeY()));
+        return true;
+    }
+
+
+    public boolean deleteNow() {
+        return gameObject.deleteNow() && bulletController.deleteNow();
     }
 
 
@@ -43,11 +61,9 @@ public class EnemyPlaneController extends SingleController implements Colliable 
 
     @Override
     public void onCollide(Colliable col) {
-        System.out.println(col instanceof PlaneController);
         if (col instanceof PlaneController) {
             GameObject plane = col.getCollisionObject();
             gameObject.takeDamage(plane.getDamage()*2);
-            System.out.println(plane.getDamage());
         }
         if (col instanceof BulletController) {
             GameObject bullet = col.getCollisionObject();
@@ -67,14 +83,16 @@ public class EnemyPlaneController extends SingleController implements Colliable 
         bulletController.add(bc);
     }
 
-    public void draw(Graphics g) {
+    public synchronized void draw(Graphics g) {
         if (!gameObject.getDead()) gameView.drawImage(g,gameObject);
         bulletController.draw(g);
     }
 
-    public void run() {
+    public synchronized void run() {
         bulletController.run();
+        if (gameObject.getDead()) deathEffect();
         if (gameObject.getDead()) return;
+
         gameVector.x = 0;
         gameVector.y = gameObject.getMoveSpeed();
         gameObject.move(gameVector);

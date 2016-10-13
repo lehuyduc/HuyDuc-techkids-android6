@@ -30,12 +30,12 @@ public class CollisionPool implements BaseController{
     }
 
     @Override
-    public void draw(Graphics g) {
+    public synchronized void draw(Graphics g) {
 
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         int n = pool.size();
         for (int i=0;i<n-1;i++)
             for (int j=i+1;j<n;j++)

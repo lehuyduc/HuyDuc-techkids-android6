@@ -18,7 +18,7 @@ public class EnemyPlane extends GameObject {
         setHealth(100);
     }
 
-    public boolean needDelete() {
+    public boolean deleteNow() {
         return oos() || dead;
     }
 }

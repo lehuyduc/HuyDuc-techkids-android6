@@ -3,6 +3,7 @@ package controllers;
 import models.GameObject;
 import models.GameVector;
 import views.GameView;
+import views.ImageView;
 
 import java.awt.*;
 
@@ -14,6 +15,8 @@ public class SingleController implements BaseController {
     protected GameView gameView;
     protected GameVector gameVector;
 
+    protected boolean deathEffect = false;
+
     //**********  GETTER  ******************************************************************
     public GameObject getGameObject() {return gameObject;}
 
@@ -24,17 +27,17 @@ public class SingleController implements BaseController {
     public void setGameVector(int x,int y) {gameVector.x = x; gameVector.y = y;}
 
     public void setImage(String link) {
-        gameView.setImage(link);
+        if (gameView instanceof ImageView) gameView.setImage(link);
     }
 
     //**********  VIEW FUNCTIONS  ******************************************************************
-    public void draw(Graphics g) {
+    public synchronized void draw(Graphics g) {
         if (!gameObject.getDead()) gameView.drawImage(g,gameObject);
     }
 
     //**********  CONTROLLER FUNCTIONS  ******************************************************************
 
-    public void run() {
+    public synchronized void run() {
         if (!gameObject.getDead()) {
             gameObject.move(gameVector);
             gameView.run();
@@ -47,7 +50,7 @@ public class SingleController implements BaseController {
         gameVector = new GameVector();
     }
 
-    public boolean needDelete() {
-        return gameObject.needDelete();
+    public boolean deleteNow() {
+        return gameObject.deleteNow();
     }
 }

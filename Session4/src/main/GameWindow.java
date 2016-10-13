@@ -2,6 +2,7 @@ package main;
 
 import controllers.CollisionPool;
 import controllers.EnemyPlaneController;
+import controllers.ExplosionControllerManager;
 import controllers.PlaneController;
 import models.EnemyPlane;
 import utilities.Utils;
@@ -17,6 +18,8 @@ import java.awt.image.BufferedImage;
 public class GameWindow extends Frame implements Runnable {
 
     public static final int BACKGROUND_WIDTH = 1200, BACKGROUND_HEIGHT = 700;
+    public static final int delay = 18;
+    public static final int animationDelay = 100;
 
     BufferedImage backBufferImage;
     Image background;
@@ -94,6 +97,7 @@ public class GameWindow extends Frame implements Runnable {
         planeController.draw(backBufferGraphics);
         planeController2.draw(backBufferGraphics);
         for (int i=0;i<8;i++) enemyPlaneControllers[i].draw(backBufferGraphics);
+        ExplosionControllerManager.instance.draw(backBufferGraphics);
 
         g.drawImage(backBufferImage,0,0,BACKGROUND_WIDTH,BACKGROUND_HEIGHT,this);
     }
@@ -102,11 +106,12 @@ public class GameWindow extends Frame implements Runnable {
     public void run() {
         try {
             while (true) {
-                Thread.sleep(40);
+                Thread.sleep(delay);
                 planeController.run();
                 planeController2.run();
                 for (int i=0;i<8;i++) enemyPlaneControllers[i].run();
                 CollisionPool.instance.run();
+                ExplosionControllerManager.instance.run();
 
                 repaint();
             }

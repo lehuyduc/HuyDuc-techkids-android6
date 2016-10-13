@@ -16,9 +16,9 @@ public class GameObject {
 
     //********** IMAGE AND DRAWING  ***************************************************************
     int BACKGROUND_WIDTH = GameWindow.BACKGROUND_WIDTH, BACKGROUND_HEIGHT = GameWindow.BACKGROUND_HEIGHT;
-    protected int x, y;
-    protected int sizeX,sizeY;
-    protected int cornerX, cornerY;
+    protected int x = 0, y = 0;
+    protected int sizeX = 0,sizeY = 0;
+    protected int cornerX = 0, cornerY = 0;
 
     //**********  GAMEPLAY  ***************************************************************
     protected int moveSpeed = 0;
@@ -98,7 +98,7 @@ public class GameObject {
         return (cornerX < -sizeX || cornerX > BACKGROUND_WIDTH || cornerY < -sizeY || cornerY > BACKGROUND_HEIGHT);
     }
 
-    public boolean needDelete() {
+    public boolean deleteNow() {
         return false;
     }
 
@@ -125,6 +125,6 @@ public class GameObject {
 
     public GameObject(int x,int y,int sx,int sy) {
         setX(x); setY(y);
-        setSizeX(x); setSizeY(y);
+        setSizeX(sx); setSizeY(sy);
     }
 }

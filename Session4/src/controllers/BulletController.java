@@ -2,8 +2,8 @@ package controllers;
 
 import models.Bullet;
 import models.GameObject;
-import models.Plane;
 import views.GameView;
+import views.ImageView;
 
 import java.awt.*;
 
@@ -18,7 +18,7 @@ public class BulletController extends SingleController implements Colliable {
     }
 
     public BulletController(int x,int y,boolean isEnemy) {
-        super(new Bullet(x,y,isEnemy), new GameView("resources/bullet.png"));
+        super(new Bullet(x,y,isEnemy), new ImageView("resources/bullet.png"));
         if (isEnemy) gameView.setImage("resources/bullet_flipped.png");
         CollisionPool.instance.add(this);
     }
