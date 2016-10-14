@@ -16,8 +16,9 @@ public class SingleController implements BaseController {
     protected GameVector gameVector;
 
     protected boolean deathEffect = false;
+    protected boolean canCollide = true;
 
-    //**********  GETTER  ******************************************************************
+    //**********  GETTER / SETTER******************************************************************
     public GameObject getGameObject() {return gameObject;}
 
     public GameView getGameView() {return gameView;}
@@ -31,13 +32,13 @@ public class SingleController implements BaseController {
     }
 
     //**********  VIEW FUNCTIONS  ******************************************************************
-    public synchronized void draw(Graphics g) {
+    public void draw(Graphics g) {
         if (!gameObject.getDead()) gameView.drawImage(g,gameObject);
     }
 
     //**********  CONTROLLER FUNCTIONS  ******************************************************************
 
-    public synchronized void run() {
+    public void run() {
         if (!gameObject.getDead()) {
             gameObject.move(gameVector);
             gameView.run();

@@ -1,6 +1,7 @@
 package controllers;
 
 import models.GameObject;
+import models.Plane;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -9,40 +10,38 @@ import java.util.Vector;
 /**
  * Created by Le Huy Duc on 13/10/2016.
  */
-public class CollisionPool implements BaseController{
+public class CollisionManager implements BaseController{
 
-    private Vector<Colliable> pool = new Vector<>();
+    private Vector<Colliable> list = new Vector<>();
 
     public void add(Colliable c) {
-        pool.add(c);
+        list.add(c);
     }
 
-    public void remove(Colliable c) {
-        pool.remove(c);
-    }
-
-    public void remove() {
-        Iterator<Colliable> it = pool.iterator();
+    public synchronized void remove() {
+        Iterator<Colliable> it = list.iterator();
         while (it.hasNext()) {
             Colliable c = it.next();
+            if (c instanceof PlaneController) continue;
             if (c.getCollisionObject().getDead()) it.remove();
         }
     }
 
     @Override
-    public synchronized void draw(Graphics g) {
+    public void draw(Graphics g) {
 
     }
 
     @Override
-    public synchronized void run() {
-        int n = pool.size();
+    public void run() {
+        int n = list.size();
         for (int i=0;i<n-1;i++)
             for (int j=i+1;j<n;j++)
             {
-                Colliable c1 = pool.get(i);
-                Colliable c2 = pool.get(j);
-                if (!c1.canCollide || !c2.canCollide) continue;
+                Colliable c1 = list.get(i);
+                Colliable c2 = list.get(j);
+
+                if (!c1.getCanCollide() || !c2.getCanCollide()) continue;
 
                 GameObject g1 = c1.getCollisionObject();
                 GameObject g2 = c2.getCollisionObject();
@@ -56,5 +55,5 @@ public class CollisionPool implements BaseController{
         remove();
     }
 
-    public static final CollisionPool instance = new CollisionPool();
+    public static final CollisionManager instance = new CollisionManager();
 }

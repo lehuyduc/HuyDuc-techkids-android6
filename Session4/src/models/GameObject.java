@@ -22,7 +22,7 @@ public class GameObject {
 
     //**********  GAMEPLAY  ***************************************************************
     protected int moveSpeed = 0;
-    protected int attackSpeed = 250; //ms
+    protected int attackSpeed = 0; //ms
     protected int damage = 0;
     protected int health = 1;
     protected boolean enemy = false;
@@ -83,9 +83,21 @@ public class GameObject {
 
 
     //**********  MOVEMENT  ******************************************************************
+    public void moveToScreen() {
+        if (x < 0) setX(0);
+        if (x > GameWindow.BACKGROUND_WIDTH) setX(GameWindow.BACKGROUND_WIDTH);
+        if (y < 0) setY(0);
+        if (y > GameWindow.BACKGROUND_HEIGHT) setY(GameWindow.BACKGROUND_HEIGHT);
+    }
+
     public void move(GameVector u) {
         setX(x+u.x);
         setY(y+u.y);
+    }
+
+    public void move(GameVector u, boolean needOnScreen) {
+        move(u);
+        if (needOnScreen) moveToScreen();
     }
 
     public void moveTo(int X,int Y) {
@@ -93,9 +105,15 @@ public class GameObject {
         setY(Y);
     }
 
+    public void moveTo(int X,int Y,boolean needOnScreen) {
+        moveTo(X,Y);
+        if (needOnScreen) moveToScreen();
+    }
+
     //**********  DESTRUCTOR  ******************************************************************
     public boolean oos() {
-        return (cornerX < -sizeX || cornerX > BACKGROUND_WIDTH || cornerY < -sizeY || cornerY > BACKGROUND_HEIGHT);
+        return (cornerX < -sizeX || cornerX > BACKGROUND_WIDTH+sizeX
+                || cornerY < -sizeY || cornerY > BACKGROUND_HEIGHT+sizeY);
     }
 
     public boolean deleteNow() {
@@ -114,14 +132,6 @@ public class GameObject {
 
 
     //**********  CONSTRUCTOR  ******************************************************************
-    public GameObject() {
-
-    }
-
-    public GameObject(int x,int y) {
-        setX(x);
-        setY(y);
-    }
 
     public GameObject(int x,int y,int sx,int sy) {
         setX(x); setY(y);

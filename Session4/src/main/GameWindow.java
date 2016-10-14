@@ -1,16 +1,15 @@
 package main;
 
-import controllers.CollisionPool;
-import controllers.EnemyPlaneController;
-import controllers.ExplosionControllerManager;
-import controllers.PlaneController;
-import models.EnemyPlane;
+import controllers.*;
+import controllers.Enemy.EnemyPlaneController;
+import controllers.Enemy.EnemyPlaneControllerManager;
 import utilities.Utils;
 
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 /**
  * Created by Le Huy Duc on 12/10/2016.
@@ -23,9 +22,7 @@ public class GameWindow extends Frame implements Runnable {
 
     BufferedImage backBufferImage;
     Image background;
-    PlaneController planeController = new PlaneController(500,500,false);
-    PlaneController planeController2 = new PlaneController(700,500,true);
-    EnemyPlaneController[] enemyPlaneControllers = new EnemyPlaneController[10];
+    BombController bc;
 
     public GameWindow() {
         this.setVisible(true);
@@ -71,13 +68,13 @@ public class GameWindow extends Frame implements Runnable {
             }
         });
 
-        this.addKeyListener(planeController.kil);
+        this.addKeyListener(PlaneController.instance1.kil);
 
-        this.addMouseListener(planeController2.mil);
+        this.addMouseListener(PlaneController.instance2.mil);
 
-        this.addMouseMotionListener(planeController2.mil);
+        this.addMouseMotionListener(PlaneController.instance2.mil);
 
-        for (int i=0;i<8;i++) enemyPlaneControllers[i] = new EnemyPlaneController(i*100+100,0);
+        for (int i=0;i<8;i++) EnemyPlaneControllerManager.instance.add(new EnemyPlaneController(i*100+100,0));
 
         repaint();
     }
@@ -94,24 +91,28 @@ public class GameWindow extends Frame implements Runnable {
 
         backBufferGraphics.drawImage(background,0,0,BACKGROUND_WIDTH,BACKGROUND_HEIGHT,this);
 
-        planeController.draw(backBufferGraphics);
-        planeController2.draw(backBufferGraphics);
-        for (int i=0;i<8;i++) enemyPlaneControllers[i].draw(backBufferGraphics);
-        ExplosionControllerManager.instance.draw(backBufferGraphics);
+        ControllerController.instance.draw(backBufferGraphics);
+
+        if (bc!=null) bc.draw(backBufferGraphics);
 
         g.drawImage(backBufferImage,0,0,BACKGROUND_WIDTH,BACKGROUND_HEIGHT,this);
     }
 
+    static int count = 0;
     @Override
     public void run() {
         try {
             while (true) {
                 Thread.sleep(delay);
-                planeController.run();
-                planeController2.run();
-                for (int i=0;i<8;i++) enemyPlaneControllers[i].run();
-                CollisionPool.instance.run();
-                ExplosionControllerManager.instance.run();
+                count++;
+
+                if (count == 10*delay) {
+                    count = 0;
+                    Random rd = new Random();
+                    bc = new BombController(rd.nextInt(800)+300,rd.nextInt(300)+300);
+                }
+                GameLevel.level1();
+                ControllerController.instance.run();
 
                 repaint();
             }

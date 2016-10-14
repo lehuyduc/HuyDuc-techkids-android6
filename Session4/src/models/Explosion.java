@@ -12,9 +12,7 @@ public class Explosion extends GameObject {
     private long firstExplosion;
 
     public Explosion(int x,int y) {
-        super(x,y);
-        setSizeX(SIZEX);
-        setSizeY(SIZEY);
+        super(x,y,SIZEX,SIZEY);
         firstExplosion = System.currentTimeMillis();
     }
 

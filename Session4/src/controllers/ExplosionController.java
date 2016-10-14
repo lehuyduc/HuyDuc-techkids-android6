@@ -23,12 +23,12 @@ public class ExplosionController extends SingleController {
     }
 
     @Override
-    public synchronized void draw(Graphics g) {
+    public void draw(Graphics g) {
         gameView.drawImage(g,gameObject);
     }
 
     @Override
-    public synchronized void run() {
+    public void run() {
 
     }
 }

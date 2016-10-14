@@ -43,15 +43,14 @@ public class AnimationView implements GameView{
 
     }
 
-    public synchronized void drawImage(Graphics g, GameObject go) {
+    public void drawImage(Graphics g, GameObject go) {
         long now = System.currentTimeMillis();
         int i = (int)(now - firstAnimation) / GameWindow.animationDelay;
-        System.out.println(firstAnimation + " " + now + " "  + i);
         if (i>=phases) return;
         g.drawImage(sprite[i],go.getCornerX(),go.getCornerY(),go.getSizeX(),go.getSizeY(),null);
     }
 
-    public synchronized void run() {
+    public void run() {
 
     }
 }

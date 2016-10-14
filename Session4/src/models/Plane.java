@@ -9,7 +9,5 @@ public class Plane extends GameObject {
 
     public Plane(int x,int y) {
         super(x,y,SIZEX,SIZEY);
-        setSizeX(SIZEX);
-        setSizeY(SIZEY);
     }
 }

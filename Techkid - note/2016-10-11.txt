@@ -39,3 +39,9 @@ final means that the REFERENCE can not be changed, but the object can.
 public static final MyPlane[] myPlanes = new MyPlane[3];
 myPlanes[0].setDamage(100);
 -> is still ok
+
+/*****************************************/
+- Synchronized: use synchronized in outermost classes (can run alone
+without being contained in any other classes)
+Because, if a class only exists inside another, then we just need to
+synchronized the function that the outer class uses.

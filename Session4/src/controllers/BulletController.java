@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.Enemy.EnemyPlaneController;
 import models.Bullet;
 import models.GameObject;
 import views.GameView;
@@ -14,19 +15,29 @@ public class BulletController extends SingleController implements Colliable {
 
     public BulletController(GameObject go, GameView gv) {
         super(go, gv);
-        CollisionPool.instance.add(this);
+        CollisionManager.instance.add(this);
     }
 
     public BulletController(int x,int y,boolean isEnemy) {
         super(new Bullet(x,y,isEnemy), new ImageView("resources/bullet.png"));
         if (isEnemy) gameView.setImage("resources/bullet_flipped.png");
-        CollisionPool.instance.add(this);
+        CollisionManager.instance.add(this);
     }
 
 
     //**********  COLLISION ******************************************************************
     public GameObject getCollisionObject() {
         return gameObject;
+    }
+
+    @Override
+    public boolean getCanCollide() {
+        return this.canCollide;
+    }
+
+    @Override
+    public void setCanCollide(boolean v) {
+        this.canCollide = v;
     }
 
     public void onCollide(Colliable col) {
@@ -40,7 +51,7 @@ public class BulletController extends SingleController implements Colliable {
     }
 
 
-    //**********  MVC MODEL ******************************************************************
+    //**********  MVC ******************************************************************
     public synchronized void draw(Graphics g) {
         if (!gameObject.getDead()) gameView.drawImage(g,gameObject);
     }

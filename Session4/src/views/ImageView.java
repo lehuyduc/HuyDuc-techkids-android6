@@ -19,7 +19,7 @@ public class ImageView implements GameView {
         this.image = photo;
     }
 
-    public synchronized void drawImage(Graphics g, GameObject go) {
+    public void drawImage(Graphics g, GameObject go) {
         g.drawImage(image,go.getCornerX(),go.getCornerY(),go.getSizeX(),go.getSizeY(),null);
     }
 
@@ -31,7 +31,7 @@ public class ImageView implements GameView {
         this.image = Utils.getImage(link);
     }
 
-    public synchronized void run() {
+    public void run() {
 
     }
 }

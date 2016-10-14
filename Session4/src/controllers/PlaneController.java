@@ -1,5 +1,8 @@
 package controllers;
 
+import controllers.Enemy.EnemyPlaneController;
+import controllers.Enemy.EnemyPlaneControllerManager;
+import main.GameWindow;
 import models.GameObject;
 import models.Plane;
 import utilities.KeyInput;
@@ -16,29 +19,38 @@ import java.awt.*;
  */
 public class PlaneController extends SingleController implements Colliable{
 
-    private ControllerManager bulletManager = new ControllerManager();
     private KeyInput keyInput = new KeyInput();
     public KeyInputListener kil = new KeyInputListener(keyInput);
     private MouseInput mouseInput = new MouseInput();
     public MouseInputListener mil = new MouseInputListener(mouseInput);
-
     private boolean useMouse = false;
+
+    private ControllerManager bulletManager = new ControllerManager();
+    private int live = 5;
+    private boolean deathEffect = false;
+    private long lastDead = 0;
+
+
+    //**********  CONSTRUCTOR ******************************************************************
+    public void checkDefault() {
+        gameObject.setSizeX(50);
+        gameObject.setSizeY(50);
+        gameObject.setMoveSpeed(10);
+        gameObject.setAttackSpeed(300);
+        if (gameObject.getDamage()==0) gameObject.setDamage(45);
+    }
 
     public PlaneController(GameObject go, GameView gv) {
         super(go,gv);
-        CollisionPool.instance.add(this);
+        CollisionManager.instance.add(this);
     }
 
     public PlaneController(int x,int y,boolean mouse) {
         super(new Plane(x,y), new ImageView("resources/plane2.png"));
         if (mouse) gameView.setImage("resources/plane3.png");
         useMouse = mouse;
-        gameObject.setSizeX(50);
-        gameObject.setSizeY(50);
-        gameObject.setMoveSpeed(10);
-        if (!mouse) gameObject.setDamage(50);
-        else gameObject.setDamage(40);
-        CollisionPool.instance.add(this);
+        checkDefault();
+        CollisionManager.instance.add(this);
     }
 
 
@@ -46,6 +58,16 @@ public class PlaneController extends SingleController implements Colliable{
     @Override
     public GameObject getCollisionObject() {
         return gameObject;
+    }
+
+    @Override
+    public boolean getCanCollide() {
+        return this.canCollide;
+    }
+
+    @Override
+    public void setCanCollide(boolean v) {
+        this.canCollide = v;
     }
 
     @Override
@@ -57,6 +79,10 @@ public class PlaneController extends SingleController implements Colliable{
         if (col instanceof BulletController) {
             GameObject bullet = col.getCollisionObject();
             if (bullet.getEnemy()) gameObject.takeDamage(bullet.getDamage());
+        }
+        if (col instanceof BombController) {
+            GameObject bomb = col.getCollisionObject();
+            EnemyPlaneControllerManager.instance.takeDamage(bomb.getDamage());
         }
     }
 
@@ -71,13 +97,36 @@ public class PlaneController extends SingleController implements Colliable{
         bulletManager.add(bc);
     }
 
-    public synchronized void draw(Graphics g) {
+    private boolean deathEffect() {
+        if (deathEffect) return false;
+        deathEffect = true;
+        lastDead = System.currentTimeMillis();
+        GameObject go = gameObject;
+        ExplosionControllerManager.instance.add
+                (new ExplosionController(go.getX(),go.getY(),go.getSizeX(),go.getSizeY()));
+        this.setCanCollide(false);
+        return true;
+    }
+
+    private void respawn() {
+        live--;
+        gameObject.setDead(false);
+        gameObject.setX(GameWindow.BACKGROUND_WIDTH/2);
+        gameObject.setY(GameWindow.BACKGROUND_HEIGHT/3*5);
+    }
+
+    public void draw(Graphics g) {
         if (!gameObject.getDead()) gameView.drawImage(g,gameObject);
         bulletManager.draw(g);
     }
 
-    public synchronized void run() {
+    public void run() {
         bulletManager.run();
+        if (gameObject.getDead()) deathEffect();
+        long now = System.currentTimeMillis();
+        if (now - lastDead >= 1500 && gameObject.getDead() && live > 0) respawn();
+        if (now - lastDead >= 2250 && deathEffect) {this.setCanCollide(true); deathEffect = false;
+        }
 
         if (gameObject.getDead()) return;
         gameVector.x = 0;
@@ -91,14 +140,15 @@ public class PlaneController extends SingleController implements Colliable{
             if (keyInput.keyUp) gameVector.y -= gameObject.getMoveSpeed();
             if (keyInput.keyUp && keyInput.keyDown) gameVector.y =  0;
             if (keyInput.keySpace)  attack();
-
-            gameObject.move(gameVector);
+            gameObject.move(gameVector,true);
         }
         else {
             Point p = mouseInput.mouseLocation;
-            gameObject.moveTo(p.x,p.y);
+            gameObject.moveTo(p.x,p.y,true);
             if (mouseInput.pressed) attack();
         }
     }
 
+    public static final PlaneController instance1 = new PlaneController(500,500,false);
+    public static final PlaneController instance2 = new PlaneController(700,500,true);
 }

@@ -10,9 +10,8 @@ public class Bullet extends GameObject {
     protected static int SIZEX = 13, SIZEY = 30;
 
     public Bullet(int x,int y,boolean isEnemy) {
-        super(x,y);
+        super(x,y,SIZEX,SIZEY);
         enemy = isEnemy;
-        setSizeX(SIZEX); setSizeY(SIZEY);
         if (enemy) setMoveSpeed(6); else setMoveSpeed(10);
         setDamage(50);
     }

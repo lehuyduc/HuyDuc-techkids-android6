@@ -8,8 +8,8 @@ import java.util.Vector;
  */
 public class ExplosionControllerManager extends ControllerManager {
 
-    public ExplosionControllerManager() {
-        singleControllers = new Vector<>();
+    private ExplosionControllerManager() {
+
     }
 
     public static final ExplosionControllerManager instance = new ExplosionControllerManager();

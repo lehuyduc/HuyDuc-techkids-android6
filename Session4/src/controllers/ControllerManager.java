@@ -21,6 +21,7 @@ public class ControllerManager implements BaseController{
         return singleControllers.size()==0;
     }
 
+    public int size() {return singleControllers.size();}
 
     public synchronized void add(SingleController sc) {
         singleControllers.add(sc);

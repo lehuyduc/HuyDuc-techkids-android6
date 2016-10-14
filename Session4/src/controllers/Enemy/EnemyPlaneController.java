@@ -1,5 +1,7 @@
-package controllers;
+package controllers.Enemy;
 
+import controllers.*;
+import controllers.Enemy.Movement.*;
 import models.EnemyPlane;
 import models.GameObject;
 import views.GameView;
@@ -12,31 +14,42 @@ import java.awt.*;
  */
 public class EnemyPlaneController extends SingleController implements Colliable {
 
-    private ControllerManager bulletController = new ControllerManager();
+    private ControllerManager bulletController;
+    private MovePattern movePattern;
 
 
     //**********  CONSTRUCTOR/DESTRUCTOR ******************************************************************
+    void checkDefault() {
+        if (bulletController==null) bulletController = new ControllerManager();
+        if (movePattern==null) movePattern = new MovePatternDown();
+        if (gameObject.getMoveSpeed()==0) gameObject.setMoveSpeed(1);
+        if (gameObject.getHealth()==1) gameObject.setHealth(100);
+        if (gameObject.getAttackSpeed()==0) gameObject.setAttackSpeed(3000);
+    }
+
     public EnemyPlaneController(GameObject go, GameView gv) {
         super(go, gv);
-        CollisionPool.instance.add(this);
+        CollisionManager.instance.add(this);
     }
 
     public EnemyPlaneController(int x,int y) {
         super(new EnemyPlane(x,y), new ImageView("resources/enemy_plane_white_2.png"));
-        gameObject.setSizeX(EnemyPlane.SIZEX);
-        gameObject.setSizeY(EnemyPlane.SIZEY);
-        gameObject.setMoveSpeed(1);
-        gameObject.setHealth(100);
-        gameObject.setAttackSpeed(30000);
-        CollisionPool.instance.add(this);
+        checkDefault();
+        CollisionManager.instance.add(this);
     }
 
     public EnemyPlaneController(int x,int y,int sx,int sy) {
-        super(new GameObject(x,y,sx,sy), new ImageView("resources/enemy_plane_white_2.png"));
-        gameObject.setMoveSpeed(1);
-        gameObject.setHealth(100);
-        gameObject.setAttackSpeed(30000);
-        CollisionPool.instance.add(this);
+        super(new EnemyPlane(x,y,sx,sy), new ImageView("resources/enemy_plane_white_2.png"));
+        checkDefault();
+        CollisionManager.instance.add(this);
+    }
+
+    public EnemyPlaneController(int x,int y,MovePatternType tp) {
+        super(new EnemyPlane(x,y), new ImageView("resources/enemy_plane_white_2.png"));
+        if (tp==MovePatternType.ZIGZAG) movePattern = new MovePatternZigzag();
+        if (tp==MovePatternType.RANDOM) movePattern = new MovePatternRandom();
+        checkDefault();
+        CollisionManager.instance.add(this);
     }
 
     public boolean deathEffect() {
@@ -53,10 +66,19 @@ public class EnemyPlaneController extends SingleController implements Colliable 
         return gameObject.deleteNow() && bulletController.deleteNow();
     }
 
-
     //**********  COLLISION ******************************************************************
-   public GameObject getCollisionObject() {
+    public GameObject getCollisionObject() {
         return gameObject;
+    }
+
+    @Override
+    public boolean getCanCollide() {
+        return this.canCollide;
+    }
+
+    @Override
+    public void setCanCollide(boolean v) {
+        this.canCollide = false;
     }
 
     @Override
@@ -74,6 +96,7 @@ public class EnemyPlaneController extends SingleController implements Colliable 
     //**********  MVC ******************************************************************
     private long lastAttack = 0;
     private void attack() {
+        if (gameObject.getAttackSpeed()==0) return;
         long now = System.currentTimeMillis();
         if (now - lastAttack < gameObject.getAttackSpeed()) return;
         lastAttack = now;
@@ -83,18 +106,19 @@ public class EnemyPlaneController extends SingleController implements Colliable 
         bulletController.add(bc);
     }
 
-    public synchronized void draw(Graphics g) {
+    public void draw(Graphics g) {
         if (!gameObject.getDead()) gameView.drawImage(g,gameObject);
         bulletController.draw(g);
     }
 
-    public synchronized void run() {
+    public void run() {
         bulletController.run();
         if (gameObject.getDead()) deathEffect();
         if (gameObject.getDead()) return;
 
         gameVector.x = 0;
         gameVector.y = gameObject.getMoveSpeed();
+        movePattern.move(gameObject);
         gameObject.move(gameVector);
         attack();
     }
