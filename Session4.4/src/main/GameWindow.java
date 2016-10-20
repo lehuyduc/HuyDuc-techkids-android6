@@ -83,13 +83,13 @@ public class GameWindow extends Frame implements Runnable {
                 if (e.getKeyCode()==KeyEvent.VK_ENTER) {
                     if (state==2) {state = 0; return;}
                     if (state==3) {state = 0; return;}
-                    if (state==1) state = 2;
                     if (state==0) {
                         ControllerController.instance.initAll();
                         GameLevel.init();
                         state = 1;
                     }
                 }
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) state = 0;
             }
 
             @Override

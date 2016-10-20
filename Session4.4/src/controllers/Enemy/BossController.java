@@ -162,7 +162,7 @@ public class BossController extends EnemyPlaneController implements Colliable {
 
         EnemyBulletController bullet = new EnemyBulletController(x,y);
         bullet.setMoveSpeed(6);
-        bullet.setImage("resources/bullet.png");
+        bullet.setImage("resources/bullet_flipped.png");
         bullet.setSizeX(13);
         bullet.setSizeY(30);
 
@@ -194,14 +194,15 @@ public class BossController extends EnemyPlaneController implements Colliable {
 
     public synchronized void attack3() {
         for (int i=0;i<4;i++) {
-            EnemyPlaneController epc = new EnemyPlaneController(rd.nextInt(11)*100+100,100);
+            EnemyPlaneController epc = new EnemyPlaneController(rd.nextInt(11)*100+100,25);
             epc.setSizeX(80);
             epc.setSizeY(80);
             epc.setImage("resources/phoenix.png");
             epc.setBulletImage("resources/phoenix_bullet3.png");
-            epc.setHealth(325);
+            epc.setHealth(250);
             epc.setMoveSpeed(1);
-            epc.setAttackSpeed(2800);
+            epc.setAttackSpeed(2400);
+            epc.setDamage(125);
             BackManager.instance.add(epc);
         }
     }
@@ -234,7 +235,7 @@ public class BossController extends EnemyPlaneController implements Colliable {
         if (!entrance) return;
 
         long now = System.currentTimeMillis();
-        if (now - lastAttack >= 7000) {
+        if (now - lastAttack >= 6000) {
             tp = rd.nextInt(3) + 1;
             if (tp==3 && EnemyPlaneControllerManager.instance.size() >= 3) tp = rd.nextInt(3);
             lastAttack = now;

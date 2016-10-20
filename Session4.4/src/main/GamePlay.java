@@ -17,7 +17,7 @@ public class GamePlay {
     public static final int BACKGROUND_WIDTH = 1200, BACKGROUND_HEIGHT = 700;
     public static final int delay = 18;
     public static final int animationDelay = 100;
-    public static final long bombLife = 5000;
+    public static final long bombLife = 12000;
 
     private Image background;
     BombController bc;

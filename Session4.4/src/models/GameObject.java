@@ -105,6 +105,7 @@ public class GameObject {
     public void moveTo(int X,int Y) {
         setX(X);
         setY(Y);
+        moveToScreen();
     }
 
     public void moveTo(int X,int Y,boolean needOnScreen) {

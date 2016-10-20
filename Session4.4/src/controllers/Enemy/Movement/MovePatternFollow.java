@@ -29,7 +29,7 @@ public class MovePatternFollow extends MovePattern {
     public void move(GameObject go) {
         int v = go.getMoveSpeed();
         if (Utils.distance(new Point(target.getX(),target.getY()),
-                                     new Point(go.getX(),go.getY())) <= 245) chase = false;
+                                     new Point(go.getX(),go.getY())) <= 190) chase = false;
         long now = System.currentTimeMillis();
         if (chase && now - firstChase <= 10000) {
             dx = target.getX() - go.getX();

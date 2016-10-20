@@ -71,7 +71,7 @@ public class GameLevel {
 
    public synchronized void run() {
         if (!level[1]) {level1(); return;}
-      //  if (!level[2]) {level2(); return;}
+        if (!level[2]) {level2(); return;}
         if (!level[3]) {level3(); return;}
     }
 

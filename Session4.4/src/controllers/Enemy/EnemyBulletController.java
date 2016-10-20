@@ -49,18 +49,9 @@ public class EnemyBulletController extends SingleController implements Colliable
             if (target==1) plane = PlaneController.instance1.getGameObject();
             else plane = PlaneController.instance2.getGameObject();
             if (plane.getDead()) if (target==1) target = 2; else target = 1;
-            if (tp==MovePatternType.AIM) movePattern = new MovePatternAim(plane.getX()-x,plane.getY()-y);
+            if (tp==MovePatternType.AIM) movePattern = new MovePatternAim(plane.getX(),plane.getY());
             else movePattern = new MovePatternFollow(plane);
         }
-        checkDefault();
-    }
-
-    public EnemyBulletController(int x,int y,int target) {
-        super(new EnemyBullet(x,y), new ImageView("resources/enemy_bullet.png"));
-        GameObject plane;
-        if (target==1) plane = PlaneController.instance1.getGameObject();
-        else plane = PlaneController.instance2.getGameObject();
-        movePattern = new MovePatternAim(plane.getX(),plane.getY());
         checkDefault();
     }
 

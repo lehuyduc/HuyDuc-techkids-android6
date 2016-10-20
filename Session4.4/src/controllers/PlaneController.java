@@ -38,8 +38,8 @@ public class PlaneController extends SingleController implements Colliable{
         gameObject.setSizeY(50);
         gameObject.setMoveSpeed(10);
         gameObject.setAttackSpeed(300);
-        if (useMouse) {gameObject.setDamage(100000); gameObject.setHealth(1);}
-        else {gameObject.setDamage(50); gameObject.setHealth(160);}
+        if (useMouse) {gameObject.setDamage(49); gameObject.setHealth(1);}
+        else {gameObject.setDamage(55); gameObject.setHealth(125);}
         setLive(5);
         gameObject.setDead(false);
         canCollide = true;
