@@ -1,6 +1,6 @@
 package controllers.enemy;
 
-import controllers.SingleControllerManager;
+import controllers.ControllerManager;
 import controllers.SingleController;
 
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  * Created by Le Huy Duc on 13/10/2016.
  */
-public class EnemyPlaneControllerManager extends SingleControllerManager {
+public class EnemyPlaneControllerManager extends ControllerManager {
 
     private EnemyPlaneControllerManager() {
         super();

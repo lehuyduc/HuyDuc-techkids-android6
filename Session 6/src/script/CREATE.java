@@ -7,7 +7,7 @@ import controllers.enemy.EnemyPlaneControllerManager;
 import controllers.enemy.EnemyPlaneType;
 import controllers.Movement.MovePatternType;
 import controllers.SingleController;
-import controllers.gifts.GiftManagerSingle;
+import controllers.gifts.GiftManager;
 import main.GamePlay;
 import models.Boss;
 import views.ImageView;
@@ -29,10 +29,8 @@ public class CREATE extends Script{
     private void input_enemy() {
         x = ScriptReader.instance.nextInt();
         y = ScriptReader.instance.nextInt();
-        movePatternType = MovePatternType.valueOf(ScriptReader.instance.next());
-        bulletPatternType = MovePatternType.valueOf(ScriptReader.instance.next());
         enemyPlaneType = EnemyPlaneType.valueOf(ScriptReader.instance.next());
-        this.singleController = new EnemyPlaneController(x,y,movePatternType,bulletPatternType,enemyPlaneType);
+        this.singleController = EnemyPlaneController.create(x,y,enemyPlaneType);
     }
 
     private void input_bomb() {
@@ -75,13 +73,13 @@ public class CREATE extends Script{
 
         if (this.singleController instanceof EnemyPlaneController &&
                 !(singleController instanceof BossController)) {
-            this.singleController = new EnemyPlaneController(x,y,movePatternType,bulletPatternType,enemyPlaneType);
+            this.singleController = EnemyPlaneController.create(x,y,enemyPlaneType);
             EnemyPlaneControllerManager.instance.add(singleController);
         }
 
         if (this.singleController instanceof BombController) {
             this.singleController = new BombController(x,y);
-            GiftManagerSingle.instance.add(singleController);
+            GiftManager.instance.add(singleController);
         }
 
         if (this.singleController instanceof BossController) {

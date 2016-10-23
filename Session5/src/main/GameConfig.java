@@ -11,9 +11,9 @@ public class GameConfig {
     public static final int DEFAULT_ANIMATION_DELAY = 100;
     public static final int BOMB_LIFE = 7000;
 
-//    private int threadDelay = 17;
-//    private int BACKGROUND_WIDTH = GamePlay.BACKGROUND_WIDTH;
-//    private int BACKGROUND_HEIGHT = GamePlay.BACKGROUND_HEIGHT;
+    public static int threadDelay = 17;
+    public static int BACKGROUND_WIDTH = GamePlay.BACKGROUND_WIDTH;
+    public static int BACKGROUND_HEIGHT = GamePlay.BACKGROUND_HEIGHT;
 //
 //    public double getSecond(int count) {
 //        return (double)(threadDelay*count)/1000;

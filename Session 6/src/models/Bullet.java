@@ -12,16 +12,9 @@ public class Bullet extends GameObject {
     public Bullet(int x,int y) {
         super(x,y,SIZEX,SIZEY);
         setMoveSpeed(10);
-        setDamage(50);
         enemy = false;
     }
 
-    public Bullet(int x,int y,int damage) {
-        super(x,y,SIZEX,SIZEY);
-        setMoveSpeed(10);
-        setDamage(damage);
-        enemy = false;
-    }
 
     public boolean deleteNow() {
         return oos() || dead;

@@ -1,5 +1,7 @@
 package controllers;
 
+import controllers.Movement.*;
+import controllers.attack.BulletType;
 import controllers.enemy.EnemyPlaneController;
 import models.Bullet;
 import models.GameObject;
@@ -13,23 +15,43 @@ import java.awt.*;
  */
 public class BulletController extends SingleController implements Colliable {
 
+    private BulletType bulletType;
+    private MovePattern movePattern;
+
     public void checkDefault(){
-        if (gameObject.getDamage()==0) gameObject.setDamage(50);
+        if (bulletType==BulletType.PLAYER_BULLET) {
+            gameObject.setDamage(50);
+            gameView.setImage("bullet.png");
+            movePattern = new MovePatternUp();
+        }
+
+        if (bulletType==bulletType.PLAYER_BULLET_LEFT) {
+            gameObject.setDamage(50);
+            gameView.setImage("bullet-left.png");
+            movePattern = new MovePatternAim(Math.PI*2/3);
+        }
+
+        if (bulletType==bulletType.PLAYER_BULLET_RIGHT) {
+            gameObject.setDamage(50);
+            gameView.setImage("bullet-right.png");
+            movePattern = new MovePatternAim(Math.PI/3);
+        }
     }
 
-    public BulletController(GameObject go, GameView gv) {
+    private BulletController(GameObject go, GameView gv) {
         super(go, gv);
         checkDefault();
     }
 
-    public BulletController(int x,int y) {
-        super(new Bullet(x,y), new ImageView("bullet.png"));
+    private BulletController(int x, int y, BulletType type, MovePattern movePattern) {
+        super(new Bullet(x,y),new ImageView("bullet.png"));
+        this.bulletType = type;
+        this.movePattern = movePattern;
         checkDefault();
     }
 
-    public BulletController(int x,int y,int damage) {
-        super(new Bullet(x,y,damage), new ImageView("bullet.png"));
-        checkDefault();
+    public static BulletController create(int x,int y,BulletType bulletType,MovePatternType movePatternType) {
+        return new BulletController(x,y,bulletType,MovePattern.create(movePatternType));
     }
 
 
@@ -40,7 +62,8 @@ public class BulletController extends SingleController implements Colliable {
 
     public void onCollide(Colliable col) {
         if (col instanceof EnemyPlaneController) {
-            gameObject.takeDamage(100);
+            GameObject enemyPlane = col.getCollisionObject();
+            enemyPlane.takeDamage(getDamage());
         }
     }
 
@@ -51,9 +74,7 @@ public class BulletController extends SingleController implements Colliable {
     }
 
     public synchronized void run() {
-        gameVector.x = 0;
-        if (gameObject.getEnemy()) gameVector.y = gameObject.getMoveSpeed();
-        else gameVector.y = -gameObject.getMoveSpeed();
+        movePattern.move(gameObject);
 
         if (!gameObject.getDead()) gameObject.move(gameVector);
     }

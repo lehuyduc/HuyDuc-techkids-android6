@@ -1,6 +1,9 @@
 package main;
 
 import controllers.*;
+import controllers.enemy.EnemyBulletController;
+import controllers.enemy.EnemyPlaneController;
+import controllers.enemy.EnemyPlaneControllerManager;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -8,6 +11,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
+
+import static controllers.enemy.EnemyPlaneType.WHITE;
 
 /**
  * Created by Le Huy Duc on 12/10/2016.
@@ -97,6 +102,8 @@ public class GameWindow extends Frame implements Runnable {
 
             }
         });
+
+
 
         repaint();
     }

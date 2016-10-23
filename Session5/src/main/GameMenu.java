@@ -13,7 +13,7 @@ public class GameMenu {
     private Image background;
 
     public GameMenu() {
-        background = Utils.getImage("resources/game_menu.png");
+        background = Utils.getImage("game_menu.png");
     }
 
     public void draw(Graphics g) {

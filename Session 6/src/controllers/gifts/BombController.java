@@ -4,6 +4,7 @@ import controllers.Colliable;
 import controllers.CollisionManager;
 import controllers.PlaneController;
 import controllers.SingleController;
+import controllers.enemy.EnemyPlaneControllerManager;
 import main.GameConfig;
 import main.GamePlay;
 import models.Bomb;
@@ -33,7 +34,9 @@ public class BombController extends SingleController implements Colliable {
 
     @Override
     public void onCollide(Colliable col) {
+        if (getDead()) return;
         if (col instanceof PlaneController) {
+            EnemyPlaneControllerManager.instance.takeDamage(gameObject.getDamage());
             gameObject.takeDamage(1000);
             GamePlay.lastBomb = System.currentTimeMillis();
         }
@@ -41,7 +44,7 @@ public class BombController extends SingleController implements Colliable {
 
     public boolean deleteNow() {
         long now = System.currentTimeMillis();
-        return (now - appear >= GameConfig.BOMB_LIFE);
+        return (now - appear >= GameConfig.BOMB_LIFE || getDead());
     }
 
     public void draw(Graphics g) {

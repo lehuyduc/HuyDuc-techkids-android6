@@ -6,6 +6,8 @@ package controllers.enemy;
 public enum EnemyPlaneType {
     WHITE,
     YELLOW,
+    RED,
+    GREY,
     PHOENIX,
     BOSS,
     INVALID;

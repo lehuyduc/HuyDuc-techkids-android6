@@ -15,6 +15,8 @@ public class CollisionManager implements BaseController{
 
     private Vector<Colliable> list = new Vector<>();
 
+    public int size() {return list.size();}
+
     public void add(Colliable c) {
         list.add(c);
     }

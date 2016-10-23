@@ -1,5 +1,8 @@
 package controllers;
 
+import controllers.Movement.MovePatternType;
+import controllers.attack.AttackController;
+import controllers.attack.BulletType;
 import controllers.enemy.EnemyBulletController;
 import controllers.enemy.EnemyPlaneController;
 import controllers.enemy.EnemyPlaneControllerManager;
@@ -28,7 +31,9 @@ public class PlaneController extends SingleController implements Colliable{
     public MouseInputListener mil = new MouseInputListener(mouseInput);
     private boolean useMouse = false;
 
-    private SingleControllerManager bulletManager = new SingleControllerManager();
+    private ControllerManager bulletManager = new ControllerManager();
+    private AttackController attackController =
+            AttackController.create(BulletType.PLAYER_BULLET, MovePatternType.UP);
     private int live = 5;
     private boolean deathEffect = false, godMode = false;
     private long lastDead = 0;
@@ -65,6 +70,10 @@ public class PlaneController extends SingleController implements Colliable{
 
     public void setLive(int v) {live = v;}
 
+    public void powerUp(int v) {
+        attackController.powerUp(v);
+    }
+
 
     //**********  COLLISION ******************************************************************
     @Override
@@ -76,15 +85,11 @@ public class PlaneController extends SingleController implements Colliable{
     public void onCollide(Colliable col) {
         if (col instanceof EnemyPlaneController) {
             GameObject enemyPlane = col.getCollisionObject();
-            gameObject.takeDamage(enemyPlane.getHealth());
+            enemyPlane.takeDamage(gameObject.getDamage()*2);
         }
         if (col instanceof EnemyBulletController) {
             GameObject bullet = col.getCollisionObject();
-            gameObject.takeDamage(bullet.getDamage());
-        }
-        if (col instanceof BombController) {
-            GameObject bomb = col.getCollisionObject();
-            EnemyPlaneControllerManager.instance.takeDamage(bomb.getDamage());
+            bullet.takeDamage(1000);
         }
     }
 
@@ -94,9 +99,7 @@ public class PlaneController extends SingleController implements Colliable{
         long now = System.currentTimeMillis();
         if (now - lastAttack < gameObject.getAttackSpeed()) return;
         lastAttack = now;
-        BulletController bc = new BulletController(gameObject.getCornerX() + gameObject.getSizeX() / 2,
-                gameObject.getCornerY(),gameObject.getDamage());
-        bulletManager.add(bc);
+        attackController.run(gameObject,bulletManager);
     }
 
     private boolean deathEffect() {
@@ -106,7 +109,7 @@ public class PlaneController extends SingleController implements Colliable{
         this.setCanCollide(false);
         lastDead = System.currentTimeMillis();
         GameObject go = gameObject;
-        ExplosionSingleControllerManager.instance.add
+        ExplosionControllerManager.instance.add
                 (new ExplosionController(go.getX(),go.getY(),go.getSizeX(),go.getSizeY()));
         return true;
     }

@@ -1,5 +1,9 @@
 package controllers;
 
+import controllers.Movement.MovePattern;
+import controllers.Movement.MovePatternDown;
+import controllers.Movement.MovePatternType;
+import controllers.attack.BulletType;
 import controllers.enemy.EnemyPlaneController;
 import models.Bullet;
 import models.GameObject;
@@ -13,23 +17,31 @@ import java.awt.*;
  */
 public class BulletController extends SingleController implements Colliable {
 
+    private BulletType bulletType = BulletType.PLAYER_BULLET;
+    private MovePattern movePattern = new MovePatternDown();
+
     public void checkDefault(){
-        if (gameObject.getDamage()==0) gameObject.setDamage(50);
+        if (bulletType==BulletType.PLAYER_BULLET) {
+            gameObject.setDamage(50);
+            gameView.setImage("bullet.png");
+        }
+        
     }
 
-    public BulletController(GameObject go, GameView gv) {
+    private BulletController(GameObject go, GameView gv) {
         super(go, gv);
         checkDefault();
     }
 
-    public BulletController(int x,int y) {
-        super(new Bullet(x,y), new ImageView("resources/bullet.png"));
+    private BulletController(int x, int y, BulletType type, MovePattern movePattern) {
+        super(new Bullet(x,y),new ImageView("bullet.png"));
+        this.bulletType = type;
+        this.movePattern = movePattern;
         checkDefault();
     }
 
-    public BulletController(int x,int y,int damage) {
-        super(new Bullet(x,y,damage), new ImageView("resources/bullet.png"));
-        checkDefault();
+    public static BulletController create(int x,int y,BulletType bulletType,MovePatternType movePatternType) {
+        return new BulletController(x,y,bulletType,MovePattern.create(movePatternType));
     }
 
 
@@ -51,9 +63,7 @@ public class BulletController extends SingleController implements Colliable {
     }
 
     public synchronized void run() {
-        gameVector.x = 0;
-        if (gameObject.getEnemy()) gameVector.y = gameObject.getMoveSpeed();
-        else gameVector.y = -gameObject.getMoveSpeed();
+        movePattern.move(gameObject);
 
         if (!gameObject.getDead()) gameObject.move(gameVector);
     }

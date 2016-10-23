@@ -1,13 +1,21 @@
 package main;
 
+import controllers.enemy.BossController;
+import controllers.enemy.EnemyPlaneController;
+import controllers.enemy.EnemyPlaneControllerManager;
 import controllers.gifts.BombController;
 import controllers.ControllerController;
 import controllers.PlaneController;
+import models.Boss;
 import script.Script;
 import script.ScriptRunner;
 import utilities.Utils;
+import views.ImageView;
 
 import java.awt.*;
+
+import static controllers.enemy.EnemyPlaneType.PHOENIX;
+import static controllers.enemy.EnemyPlaneType.WHITE;
 
 /**
  * Created by Le Huy Duc on 14/10/2016.
@@ -25,7 +33,7 @@ public class GamePlay {
     private long winTime = 0, loseTime = 0;
 
     public GamePlay() {
-        background = Utils.getImage("resources/background.png");
+        background = Utils.getImage("background.png");
     }
 
     public void init() {
@@ -39,11 +47,19 @@ public class GamePlay {
         ControllerController.instance.draw(g);
         if (bc != null) bc.draw(g);
     }
-
+    static boolean kt = false;
     public void run() {
         long now = System.currentTimeMillis();
 
-        ScriptRunner.instance.run();
+
+        if (!kt) {
+            BossController bc = new BossController(new Boss(600,0), new ImageView("PCarrierH.png"));
+            EnemyPlaneControllerManager.instance.add(bc);
+        }
+            //for (int i=0;i<7;i++)
+          //  EnemyPlaneControllerManager.instance.add(EnemyPlaneController.create(i*100+100,200,PHOENIX));
+        kt = true;
+
         ControllerController.instance.run();
 
         if (PlaneController.instance1.getLive()==0 && PlaneController.instance1.getDead() &&

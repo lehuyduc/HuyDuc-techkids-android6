@@ -19,6 +19,7 @@ public class GameObject {
     public static final int BACKGROUND_WIDTH = GamePlay.BACKGROUND_WIDTH, BACKGROUND_HEIGHT = GamePlay.BACKGROUND_HEIGHT;
 
     protected int x = 0, y = 0;
+    public double xReal, yReal;
     protected int sizeX = 0,sizeY = 0;
     protected int cornerX = 0, cornerY = 0;
 
@@ -35,6 +36,10 @@ public class GameObject {
     public void setX(int v) {x = v; cornerX = x - sizeX/2;}
 
     public void setY(int v) {y = v; cornerY = y - sizeY/2;}
+
+    public void setxReal(double v) {xReal = v; setX((int)xReal);}
+
+    public void setyReal(double v) {yReal = v; setY((int)yReal);}
 
     public void setSizeX(int v) {sizeX = v; cornerX = x - sizeX/2;}
 

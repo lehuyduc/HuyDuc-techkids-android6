@@ -2,6 +2,9 @@ package controllers.enemy;
 
 import controllers.*;
 import controllers.Movement.MovePattern;
+import controllers.Movement.MovePatternDown;
+import controllers.Movement.MovePatternType;
+import controllers.attack.BulletType;
 import models.Boss;
 import models.GameObject;
 import models.GameVector;
@@ -20,7 +23,7 @@ import java.util.Scanner;
  */
 public class BossController extends EnemyPlaneController implements Colliable {
 
-    private SingleControllerManager bulletManager;
+    private ControllerManager bulletManager;
     public int nPoints = 0;
     public Point[] points = new Point[20];
     public Point[] points2 = new Point[20];
@@ -30,8 +33,8 @@ public class BossController extends EnemyPlaneController implements Colliable {
     private GameObject root = new GameObject(600,160,0,0);
 
     public void checkDefault() {
-        bulletManager = new SingleControllerManager();
-        gameObject.setHealth(8500);
+        bulletManager = new ControllerManager();
+        gameObject.setHealth(1000);
         gameObject.setDead(false);
         canCollide = true;
         gameObject.setX(600);
@@ -87,7 +90,11 @@ public class BossController extends EnemyPlaneController implements Colliable {
     public void onCollide(Colliable col) {
         if (col instanceof BulletController) {
             GameObject bullet = col.getCollisionObject();
-            gameObject.takeDamage(bullet.getDamage());
+            bullet.takeDamage(1000);
+        }
+        if (col instanceof PlaneController) {
+            GameObject plane = col.getCollisionObject();
+            plane.takeDamage(1000);
         }
     }
 
@@ -156,19 +163,10 @@ public class BossController extends EnemyPlaneController implements Colliable {
 
     public void shootBullet(int i,int x,int y,String type) {
 
-        EnemyBulletController bullet = new EnemyBulletController(x,y);
-        bullet.setMoveSpeed(8);
-        bullet.setImage("bullet_flipped.png");
-        bullet.setSizeX(13);
-        bullet.setSizeY(30);
+        EnemyBulletController bullet =
+                EnemyBulletController.create(x,y, BulletType.BULLET_FLIP, MovePatternType.DOWN);
 
-        if (type=="laser") {
-            bullet.setImage("laser_beam3.png");
-            bullet.setSizeX(100);
-            bullet.setSizeY(325);
-            bullet.setMoveSpeed(9);
-            bullet.setHealth(100000);
-        }
+        if (type=="laser") bullet = EnemyBulletController.create(x,y,BulletType.LASER,MovePatternType.DOWN);
 
         bulletManager.add(bullet);
     }
@@ -192,16 +190,9 @@ public class BossController extends EnemyPlaneController implements Colliable {
 
     public synchronized void attack3() {
         for (int i=0;i<4;i++) {
-            EnemyPlaneController epc = new EnemyPlaneController(rd.nextInt(13)*80+100,10);
-            epc.setSizeX(80);
-            epc.setSizeY(80);
-            epc.setImage("phoenix.png");
-            epc.setBulletImage("phoenix_bullet3.png");
-            epc.setHealth(250);
-            epc.setMoveSpeed(1);
-            epc.setAttackSpeed(2600);
-            epc.setDamage(125);
-            BackManagerSingle.instance.add(epc);
+            EnemyPlaneController phoenix =
+                    EnemyPlaneController.create(rd.nextInt(11)*100+100,25,EnemyPlaneType.PHOENIX);
+            BackManagerSingle.instance.add(phoenix);
         }
     }
 
@@ -246,7 +237,4 @@ public class BossController extends EnemyPlaneController implements Colliable {
             if (tp == 3) attack3();
         }
     }
-
-    public static final BossController instance =
-            new BossController(new Boss(0,0), new ImageView("PCarrierH.png"));
 }

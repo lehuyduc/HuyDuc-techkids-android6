@@ -2,6 +2,8 @@ package controllers.enemy;
 
 import controllers.*;
 import controllers.Movement.*;
+import controllers.attack.AttackController;
+import controllers.attack.BulletType;
 import models.EnemyPlane;
 import models.GameObject;
 import utilities.Utils;
@@ -15,11 +17,10 @@ import java.awt.*;
  */
 public class EnemyPlaneController extends SingleController implements Colliable {
 
-    private SingleControllerManager bulletController;
+    private ControllerManager bulletManager;
     private MovePattern movePattern;
-    private MovePatternType bulletPatternType;
+    private AttackController attackController;
     private EnemyPlaneType enemyPlaneType;
-    private Image bulletImage = null;
     protected boolean isBoss = false;
 
 
@@ -28,19 +29,44 @@ public class EnemyPlaneController extends SingleController implements Colliable 
         if (enemyPlaneType==null) enemyPlaneType = EnemyPlaneType.WHITE;
         if (enemyPlaneType==EnemyPlaneType.WHITE) gameView.setImage("enemy_plane_white_2.png");
         if (enemyPlaneType==EnemyPlaneType.YELLOW) gameView.setImage("enemy_plane_yellow_2.png");
-        if (enemyPlaneType==EnemyPlaneType.PHOENIX) {
-            gameView.setImage("phoenix.png");
-            bulletImage = Utils.getImage("phoenix_bullet3.png");
-        }
-        if (bulletImage == null) bulletImage = Utils.getImage("enemy_bullet.png");
+        if (enemyPlaneType==EnemyPlaneType.PHOENIX) gameView.setImage("phoenix.png");
     }
 
     void checkDefault() {
         checkView();
+        if (bulletManager==null) bulletManager = new ControllerManager();
 
-        if (bulletController==null) bulletController = new SingleControllerManager();
+        if (enemyPlaneType==EnemyPlaneType.WHITE) {
+            gameObject.setHealth(100);
+            gameObject.setAttackSpeed(2000);
+            gameObject.setMoveSpeed(1);
+            movePattern = new MovePatternDown();
+            attackController = AttackController.create(BulletType.ENEMY_BULLET,MovePatternType.DOWN);
+        }
+
+        if (enemyPlaneType==EnemyPlaneType.YELLOW) {
+            gameObject.setHealth(150);
+            gameObject.setAttackSpeed(1900);
+            gameObject.setMoveSpeed(1);
+            movePattern = new MovePatternFollow(true);
+            attackController = AttackController.create(BulletType.ENEMY_BULLET,MovePatternType.AIM);
+        }
+
+        if (enemyPlaneType==EnemyPlaneType.PHOENIX) {
+            gameObject.setSizeX(80); gameObject.setSizeY(80);
+            gameObject.setHealth(220);
+            gameObject.setAttackSpeed(1900);
+            gameObject.setMoveSpeed(1);
+            movePattern = new MovePatternRandom();
+            attackController = AttackController.create(BulletType.PHOENIX,MovePatternType.FOLLOW);
+        }
+
+
         if (movePattern==null) movePattern = new MovePatternRandom();
-        if (bulletPatternType==null) bulletPatternType = MovePatternType.DOWN;
+        if (attackController==null) attackController = AttackController.create(
+                BulletType.ENEMY_BULLET,
+                MovePatternType.DOWN
+        );
 
         if (gameObject.getMoveSpeed()==0) gameObject.setMoveSpeed(1);
         if (gameObject.getAttackSpeed()==0) gameObject.setAttackSpeed(2000);
@@ -54,54 +80,37 @@ public class EnemyPlaneController extends SingleController implements Colliable 
         }
     }
 
-    public EnemyPlaneController(GameObject go, GameView gv) {
+    protected EnemyPlaneController(GameObject go, GameView gv) {
         super(go, gv);
         checkDefault();
     }
 
-    public EnemyPlaneController(int x,int y) {
+    private EnemyPlaneController(int x,int y, EnemyPlaneType type) {
         super(new EnemyPlane(x,y), new ImageView("enemy_plane_white_2.png"));
-        checkDefault();
-    }
-
-    public EnemyPlaneController(int x,int y,MovePatternType planeMove, MovePatternType bulletMove,
-                                EnemyPlaneType type) {
-        super(new EnemyPlane(x,y), new ImageView("enemy_plane_white_2.png"));
-        movePattern = MovePattern.newMovePattern(planeMove);
-        bulletPatternType = bulletMove;
         enemyPlaneType = type;
         checkDefault();
     }
 
-    public static EnemyPlaneController createGray(int x,int y) {
-        Image image = null;
-
-        return new EnemyPlaneController(new EnemyPlane(x,y), new ImageView("plane1.png"));
+    public static EnemyPlaneController create(int x,int y,EnemyPlaneType enemyPlaneType) {
+        return new EnemyPlaneController(x,y,enemyPlaneType);
     }
+
 
     public boolean deathEffect() {
         if (deathEffect) return false;
         deathEffect = true;
         GameObject go = gameObject;
-        ExplosionSingleControllerManager.instance.add
+        ExplosionControllerManager.instance.add
                 (new ExplosionController(go.getX(),go.getY(),go.getSizeX(),go.getSizeY()));
         return true;
     }
 
 
     public boolean deleteNow() {
-        return gameObject.deleteNow() && bulletController.deleteNow();
+        return gameObject.deleteNow() && bulletManager.deleteNow();
     }
 
     //**********  GETTER/SETTER *****************************************************************
-    public void setBulletImage(String link) {
-        bulletImage = Utils.getImage(link);
-    }
-
-    public void setBulletImage(Image im) {
-        bulletImage = im;
-    }
-
     public boolean isBoss() {return isBoss;}
 
 
@@ -114,11 +123,11 @@ public class EnemyPlaneController extends SingleController implements Colliable 
     public void onCollide(Colliable col) {
         if (col instanceof PlaneController) {
             GameObject plane = col.getCollisionObject();
-            gameObject.takeDamage(plane.getDamage()*2);
+            plane.takeDamage(getHealth()*2);
         }
         if (col instanceof BulletController) {
             GameObject bullet = col.getCollisionObject();
-            gameObject.takeDamage(bullet.getDamage());
+            bullet.takeDamage(1000);
         }
     }
 
@@ -130,33 +139,22 @@ public class EnemyPlaneController extends SingleController implements Colliable 
         long now = System.currentTimeMillis();
         if (now - lastAttack < gameObject.getAttackSpeed()) return;
         lastAttack = now;
+
         GameObject go = gameObject;
-
-        if (gameObject.getSizeX()==80) bulletPatternType = MovePatternType.FOLLOW;
-
-        EnemyBulletController bc = new EnemyBulletController(go.getCornerX() + go.getSizeX()/2,
-                                                   go.getCornerY() + go.getSizeY(), bulletPatternType);
-
-        if (gameObject.getSizeX()==80) {bc.setSizeX(40); bc.setSizeY(40);}
-
-        bc.setImage(bulletImage);
-        bulletController.add(bc);
+        attackController.run(gameObject,bulletManager);
     }
 
     public void draw(Graphics g) {
         if (!gameObject.getDead()) gameView.drawImage(g,gameObject);
-        bulletController.draw(g);
+        bulletManager.draw(g);
     }
 
     public void run() {
-        bulletController.run();
+        bulletManager.run();
         if (gameObject.getDead()) deathEffect();
         if (gameObject.getDead()) return;
 
-        gameVector.x = 0;
-        gameVector.y = gameObject.getMoveSpeed();
-        movePattern.move(gameObject);
-        gameObject.move(gameVector);
+        if (movePattern!=null) movePattern.move(gameObject);
         attack();
     }
 }

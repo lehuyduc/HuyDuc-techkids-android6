@@ -19,7 +19,7 @@ public class MovePatternRandom extends MovePattern {
         u.y = go.getMoveSpeed();
 
         long now = System.currentTimeMillis();
-        if (now - lastRand <= 35000) {
+        if (now - lastRand <= 3500 || (direction==0 && now-lastRand<=1000)) {
             Random rd = new Random();
             direction = rd.nextInt(3);
         }

@@ -14,7 +14,7 @@ import java.util.Random;
 public class MovePatternFollow extends MovePattern {
     private GameObject target;
     private int dx, dy;
-    private boolean chase = true;
+    private boolean chase = true, forever = false;
     private long firstChase = 0;
     public static int count = 0;
 
@@ -33,14 +33,25 @@ public class MovePatternFollow extends MovePattern {
         firstChase = System.currentTimeMillis();
     }
 
+    public MovePatternFollow(boolean thisWillAlwaysTakeTrueBooleanValueBecauseLazyToReFactor) {
+        Random rd = new Random();
+        int tp = rd.nextInt(2)+1;
+        GameObject plane;
+        if (tp==1) plane = PlaneController.instance1.getGameObject();
+        else plane = PlaneController.instance2.getGameObject();
+        target = plane;
+        firstChase = System.currentTimeMillis();
+        forever = true;
+    }
+
 
     @Override
     public void move(GameObject go) {
         int v = go.getMoveSpeed();
         if (Utils.distance(new Point(target.getX(),target.getY()),
-                                     new Point(go.getX(),go.getY())) <= 190) chase = false;
+                                     new Point(go.getX(),go.getY())) <= 190 && !forever) chase = false;
         long now = System.currentTimeMillis();
-        if (chase && now - firstChase <= 10000) {
+        if (chase && (now - firstChase <= 10000 || forever)) {
             dx = target.getX() - go.getX();
             dy = target.getY() - go.getY();
         }

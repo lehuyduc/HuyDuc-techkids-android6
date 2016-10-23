@@ -7,11 +7,11 @@ import java.util.Random;
  */
 public enum MovePatternType {
     DOWN,
+    UP,
     AIM,
     FOLLOW,
     RANDOM,
     ZIGZAG;
-    public static int countFollow = 0;
 
     public static MovePatternType getRandom(boolean useAll) {
         Random rd = new Random();
@@ -19,7 +19,7 @@ public enum MovePatternType {
         if (tp==0) return DOWN;
         if (!useAll) return DOWN;
         if (tp==1) return AIM;
-        if (tp==2 && countFollow>0) {countFollow--; return FOLLOW;}
+        if (tp==2)return FOLLOW;
         return DOWN;
     }
 }

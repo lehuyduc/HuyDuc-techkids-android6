@@ -16,6 +16,12 @@ public class MovePatternAim extends MovePattern {
     private int dx=0, dy=0;
     private Point target = new Point(-1,-1);
     private boolean chase = true;
+    private double alpha0 = 0;
+
+    public MovePatternAim(double alpha) {
+        alpha0 = -alpha;
+        chase = false;
+    }
 
     public MovePatternAim(int x,int y) {
         target = new Point(x,y);
@@ -35,11 +41,12 @@ public class MovePatternAim extends MovePattern {
         double v = go.getMoveSpeed();
 
         if (chase) {
-            if (Utils.distance(target,new Point(go.getX(),go.getY())) <= 400) chase = false;
+            if (Utils.distance(target,new Point(go.getX(),go.getY())) <= 250) chase = false;
             dx = target.x - go.getX();
             dy = target.y - go.getY();
         }
         double alpha = Math.atan2(dy,dx);
+        if (alpha0!=0) alpha = alpha0;
 
         int x,y;
         x = (int)Math.round(v*Math.cos(alpha));

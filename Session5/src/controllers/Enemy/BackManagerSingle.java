@@ -1,6 +1,6 @@
 package controllers.enemy;
 
-import controllers.SingleControllerManager;
+import controllers.ControllerManager;
 import controllers.SingleController;
 
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.util.Vector;
 /**
  * Created by Le Huy Duc on 15/10/2016.
  */
-public class BackManagerSingle extends SingleControllerManager {
+public class BackManagerSingle extends ControllerManager {
 
     private BackManagerSingle() {
         singleControllers = new Vector<>();

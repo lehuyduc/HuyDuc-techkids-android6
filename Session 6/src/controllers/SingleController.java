@@ -1,5 +1,6 @@
 package controllers;
 
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader;
 import main.GamePlay;
 import models.GameObject;
 import models.GameVector;
@@ -107,6 +108,10 @@ public class SingleController implements BaseController {
             gameObject.move(gameVector);
             gameView.run();
         }
+    }
+
+    public SingleController() {
+
     }
 
     public SingleController(GameObject go, GameView gv) {

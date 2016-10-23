@@ -23,6 +23,7 @@ public class ControllerManager implements BaseController{
 
     public synchronized void add(SingleController sc) {
         singleControllers.add(sc);
+        if (sc instanceof Colliable) CollisionManager.instance.add((Colliable)sc);
     }
 
     public synchronized void remove(SingleController sc) {

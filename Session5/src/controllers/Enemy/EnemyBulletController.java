@@ -1,15 +1,15 @@
 package controllers.enemy;
 
 import controllers.Colliable;
-import controllers.enemy.Movement.*;
+import controllers.Movement.*;
 import controllers.PlaneController;
 import controllers.SingleController;
+import controllers.attack.BulletType;
 import models.EnemyBullet;
 import models.GameObject;
 import views.ImageView;
 
 import java.awt.*;
-import java.util.Random;
 
 /**
  * Created by Le Huy Duc on 14/10/2016.
@@ -18,39 +18,58 @@ public class EnemyBulletController extends SingleController implements Colliable
 
     private static int SIZEX = 13, SIZEY = 30;
     private MovePattern movePattern = null;
+    private BulletType bulletType;
+
+    private void typeEnemyBullet() {
+        setSizeX(27);
+        setSizeY(27);
+        setDamage(50);
+    }
+
+    private void typeBulletFlip() {
+        setMoveSpeed(7);
+        setSizeX(20);
+        setSizeY(27);
+        setDamage(50);
+        gameView.setImage("bullet_flipped.png");
+    }
+
+    private void typePhoenix() {
+        setSizeX(35);
+        setSizeY(35);
+        setDamage(125);
+        gameView.setImage("phoenix_bullet3.png");
+    }
+
+    private void typeLaser() {
+        setSizeX(100);
+        setSizeY(325);
+        setMoveSpeed(9);
+        setHealth(100000);
+        setDamage(1000);
+        setImage("laser_beam3.png");
+    }
 
     public void checkDefault() {
-        if (gameObject.getMoveSpeed()==0) gameObject.setMoveSpeed(3);
-        if (gameObject.getDamage()==0) gameObject.setDamage(50);
-        if (movePattern==null) movePattern = new MovePatternDown();
+        setMoveSpeed(3);
+        if (bulletType==BulletType.ENEMY_BULLET) typeEnemyBullet();
+
+        if (bulletType==BulletType.BULLET_FLIP) typeBulletFlip();
+
+        if (bulletType==BulletType.PHOENIX) typePhoenix();
+
+        if (bulletType==BulletType.LASER) typeLaser();
     }
 
-    public EnemyBulletController(int x,int y) {
-        super(new EnemyBullet(x,y), new ImageView("resources/enemy_bullet.png"));
+    protected EnemyBulletController(int x,int y,BulletType bulletType, MovePatternType bulletPatternType) {
+        super(new EnemyBullet(x,y), new ImageView("enemy_bullet.png"));
+        this.bulletType = bulletType;
+        this.movePattern = MovePattern.create(bulletPatternType);
         checkDefault();
     }
 
-    public EnemyBulletController(int x,int y,int sx,int sy) {
-        super(new EnemyBullet(x,y), new ImageView("resources/enemy_bullet.png"));
-        checkDefault();
-    }
-
-    public EnemyBulletController(int x,int y,MovePatternType tp) {
-        super(new EnemyBullet(x,y), new ImageView("resources/enemy_bullet.png"));
-        if (tp==MovePatternType.ZIGZAG) movePattern = new MovePatternZigzag();
-        if (tp==MovePatternType.RANDOM) movePattern = new MovePatternRandom();
-        if (tp==MovePatternType.AIM || tp==MovePatternType.FOLLOW) {
-            gameObject.setMoveSpeed(gameObject.getMoveSpeed()*2);
-            GameObject plane;
-            Random rd = new Random();
-            int target = rd.nextInt(2) + 1;
-            if (target==1) plane = PlaneController.instance1.getGameObject();
-            else plane = PlaneController.instance2.getGameObject();
-            if (plane.getDead()) if (target==1) target = 2; else target = 1;
-            if (tp==MovePatternType.AIM) movePattern = new MovePatternAim(plane.getX(),plane.getY());
-            else movePattern = new MovePatternFollow(plane);
-        }
-        checkDefault();
+    public static EnemyBulletController create(int x, int y, BulletType bulletType, MovePatternType bulletPatternType) {
+        return new EnemyBulletController(x,y,bulletType,bulletPatternType);
     }
 
 
@@ -77,7 +96,7 @@ public class EnemyBulletController extends SingleController implements Colliable
 
     @Override
     public void run() {
-        movePattern.move(gameObject);
+        if (movePattern!=null) movePattern.move(gameObject);
         gameView.run();
     }
 }

@@ -1,13 +1,23 @@
 package main;
 
+import controllers.enemy.BossController;
+import controllers.enemy.EnemyPlaneController;
+import controllers.enemy.EnemyPlaneControllerManager;
 import controllers.gifts.BombController;
 import controllers.ControllerController;
 import controllers.PlaneController;
+import controllers.gifts.GiftManager;
+import controllers.gifts.PlayerBulletGift;
+import models.Boss;
 import script.Script;
 import script.ScriptRunner;
 import utilities.Utils;
+import views.ImageView;
 
 import java.awt.*;
+
+import static controllers.enemy.EnemyPlaneType.PHOENIX;
+import static controllers.enemy.EnemyPlaneType.WHITE;
 
 /**
  * Created by Le Huy Duc on 14/10/2016.
@@ -39,11 +49,26 @@ public class GamePlay {
         ControllerController.instance.draw(g);
         if (bc != null) bc.draw(g);
     }
+    static boolean kt = false;
+    static BombController bomb;
+    static PlayerBulletGift p1 = new PlayerBulletGift(200,200),
+                            p2 = new PlayerBulletGift(400,200),
+                            p3 = new PlayerBulletGift(600,200),
+                            p4 = new PlayerBulletGift(800,200);
 
     public void run() {
         long now = System.currentTimeMillis();
 
-        ScriptRunner.instance.run();
+        if (!kt) {
+            GiftManager.instance.add(p1);
+            GiftManager.instance.add(p2);
+            GiftManager.instance.add(p3);
+            GiftManager.instance.add(p4);
+        }
+        kt = true;
+
+        GameLevel.instance.run();
+
         ControllerController.instance.run();
 
         if (PlaneController.instance1.getLive()==0 && PlaneController.instance1.getDead() &&

@@ -12,9 +12,8 @@ import views.ImageView;
 public class BombController extends SingleController implements Colliable {
 
     public BombController(int x,int y) {
-        super(new Bomb(x,y), new ImageView("resources/bomb.png"));
+        super(new Bomb(x,y), new ImageView("bomb.png"));
         gameObject.setDamage(350);
-        CollisionManager.instance.add(this);
     }
 
     @Override

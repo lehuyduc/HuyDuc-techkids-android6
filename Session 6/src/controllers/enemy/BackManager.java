@@ -30,7 +30,6 @@ public class BackManager extends ControllerManager {
             EnemyPlaneControllerManager.instance.add(singleController);
             it.remove();
         }
-        System.out.println(size());
     }
 
     public static final BackManager instance = new BackManager();
